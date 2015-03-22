@@ -1,0 +1,7 @@
+.tab-content>.active {
+  display: block;
+  background: white;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-top: none;
+}
