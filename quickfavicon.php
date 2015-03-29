@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Quick Favicon
-Description: Easily upload and set a Favicon for your WordPress site. You may also upload and set icons specifically for iOS and Android devices and Windows 8.x Tiles.
+Description: Easily upload and set a Favicon (browser icon, shortcut icon) for your WordPress site. You may also upload and set icons specifically for iOS devices (apple touch), Android devices and Windows 8.x Tiles.
 Version: 0.22.3
 Author: Robert Cummings
 License: GPL2
