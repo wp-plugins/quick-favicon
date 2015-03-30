@@ -2,7 +2,7 @@
 /*
 Plugin Name: Quick Favicon
 Description: Easily upload and set a Favicon (browser icon, shortcut icon) for your WordPress site. You may also upload and set icons specifically for iOS devices (apple touch), Android devices and Windows 8.x Tiles.
-Version: 0.22.3
+Version: 0.22.4
 Author: Robert Cummings
 License: GPL2
 
@@ -133,10 +133,10 @@ function quickfavicon_updated_notice() {
 function quickfavicon_admin_enqueue() {
 	wp_enqueue_script( 	'quick-favicon-bootstrap-js', 							plugins_url( 'js/bootstrap.min.js', __FILE__ ), 							array( 'jquery' ), 																																					'3.3.4', true);
 	wp_enqueue_script( 	'quick-favicon-bootstrap-colorpicker-js', 	plugins_url( 'js/bootstrap-colorpicker.min.js', __FILE__ ), 	array( 'jquery', 'quick-favicon-bootstrap-js' ), 																						'2.1', true);
-	wp_enqueue_script( 	'quick-favicon', 														plugins_url( 'js/quickfavicon.min.js', __FILE__ ), 						array( 'jquery', 'quick-favicon-bootstrap-js', 'quick-favicon-bootstrap-colorpicker-js' ), 	'0.22', true);
+	wp_enqueue_script( 	'quick-favicon', 														plugins_url( 'js/quickfavicon.min.js', __FILE__ ), 						array( 'jquery', 'quick-favicon-bootstrap-js', 'quick-favicon-bootstrap-colorpicker-js' ), 	'0.22.4', true);
 	wp_enqueue_style( 	'quick-favicon-bootstrap-css', 							plugins_url( 'css/bootstrap.min.css', __FILE__ ), 						array(), 																																										'3.3.4' );
 	wp_enqueue_style( 	'quick-favicon-bootstrap-colorpicker-css', 	plugins_url( 'css/bootstrap-colorpicker.min.css', __FILE__ ), array( 'quick-favicon-bootstrap-css' ), 																										'2.1' );
-	wp_enqueue_style( 	'quick-favicon-css', 												plugins_url( 'css/quickfavicon.min.css', __FILE__ ), 					array( 'quick-favicon-bootstrap-css' ), 																										'0.22' );
+	wp_enqueue_style( 	'quick-favicon-css', 												plugins_url( 'css/quickfavicon.min.css', __FILE__ ), 					array( 'quick-favicon-bootstrap-css' ), 																										'0.22.4' );
 
 	// Set up localization for options so we can use them in our JS and jQuery
 	wp_localize_script(
@@ -1510,8 +1510,9 @@ function quickfavicon_build_panel_ios() {
 									</label>
 								</div>
 
-								<div class="input-group ios_bg_colorpicker">
-									<input type="text" id="ios_bg_color" value="<?php echo ( get_option( 'quickfavicon_ios_icon_bg' ) != '' )? get_option( 'quickfavicon_ios_icon_bg' ):'#ffffff'; ?>" class="form-control" <?php echo ( get_option( 'quickfavicon_ios_icon_bg_radio' ) != 'custom' ? ' disabled':'' ); ?> />
+								<div class="input-group colorpicker">
+									<input type="text" id="quickfavicon_ios_icon_bg" name="quickfavicon_ios_icon_bg_visible" class="form-control" value="<?php echo get_option( 'quickfavicon_ios_icon_bg' ); ?>" <?php echo ( get_option( 'quickfavicon_ios_icon_bg_radio' ) != 'custom' ? 'disabled':'' ); ?>/>
+									<input type="hidden" name="quickfavicon_ios_icon_bg" value="<?php echo get_option( 'quickfavicon_ios_icon_bg' ); ?>"/>
 									<span class="input-group-addon"><i></i></span>
 								</div>
 
@@ -1688,8 +1689,6 @@ function quickfavicon_build_panel_ios() {
 
 		</div><!-- /.row -->
 
-		<input type="hidden" id="quickfavicon_ios_icon_bg" name="quickfavicon_ios_icon_bg" value="<?php echo get_option( 'quickfavicon_ios_icon_bg' ); ?>" />
-
 	</div><!-- /.panel-body -->
 </div><!-- /.panel -->
 <?php
@@ -1783,8 +1782,9 @@ function quickfavicon_build_panel_android() {
 									</label>
 								</div>
 
-								<div class="input-group android_bg_colorpicker">
-									<input type="text" id="android_bg_color" value="<?php echo ( get_option( 'quickfavicon_android_icon_bg' ) != '' )? get_option( 'quickfavicon_android_icon_bg' ):'#ffffff'; ?>" class="form-control" <?php echo ( get_option( 'quickfavicon_android_icon_bg_radio' ) != 'custom' ? ' disabled':'' ); ?>/>
+								<div class="input-group colorpicker">
+									<input type="text" id="quickfavicon_android_icon_bg" name="quickfavicon_android_icon_bg_visible" class="form-control" value="<?php echo get_option( 'quickfavicon_android_icon_bg' ); ?>" <?php echo ( get_option( 'quickfavicon_android_icon_bg_radio' ) != 'custom' ? 'disabled':'' ); ?>/>
+									<input type="hidden" name="quickfavicon_android_icon_bg" value="<?php echo get_option( 'quickfavicon_android_icon_bg' ); ?>"/>
 									<span class="input-group-addon"><i></i></span>
 								</div>
 
@@ -1794,8 +1794,8 @@ function quickfavicon_build_panel_android() {
 
 								<small><?php _e( 'Starting with Android Lollipop, you can customize the color of the task bar.' ); ?></small>
 
-								<div class="input-group android_theme_colorpicker">
-									<input type="text" id="android_theme_color" value="<?php echo get_option( 'quickfavicon_android_icon_theme_color' ); ?>" class="form-control" />
+								<div class="input-group colorpicker">
+									<input type="text" name="quickfavicon_android_icon_theme_color" class="form-control" value="<?php echo get_option( 'quickfavicon_android_icon_theme_color' ); ?>" />
 									<span class="input-group-addon"><i></i></span>
 								</div>
 
@@ -1806,7 +1806,7 @@ function quickfavicon_build_panel_android() {
 								<small><?php _e( 'Starting with Android Chrome M39 and its manifest, this field is required.' ); ?></small>
 
 								<div class="form-group">
-									<input type="text" id="android_app_name" value="<?php echo get_option( 'quickfavicon_android_icon_app_name' ); ?>" placeholder="My App" class="form-control" required/>
+									<input type="text" name="quickfavicon_android_icon_app_name" value="<?php echo get_option( 'quickfavicon_android_icon_app_name' ); ?>" placeholder="My App" class="form-control" />
 								</div>
 
 								<?php submit_button(); ?>
@@ -1949,10 +1949,6 @@ function quickfavicon_build_panel_android() {
 
 		</div><!-- /.row -->
 
-		<input type="hidden" id="quickfavicon_android_icon_bg" name="quickfavicon_android_icon_bg" value="<?php echo get_option( 'quickfavicon_android_icon_bg' ); ?>" />
-		<input type="hidden" id="quickfavicon_android_icon_theme_color" name="quickfavicon_android_icon_theme_color" value="<?php echo get_option( 'quickfavicon_android_icon_theme_color' ); ?>" />
-		<input type="hidden" id="quickfavicon_android_icon_app_name" name="quickfavicon_android_icon_app_name" value="<?php echo get_option( 'quickfavicon_android_icon_app_name' ); ?>" />
-
 	</div><!-- /.panel-body -->
 </div><!-- /.panel -->
 <?php
@@ -2030,8 +2026,8 @@ function quickfavicon_build_panel_windows() {
 										<small><?php _e( 'Use a custom solid tile color', 'quickfavicon' ); ?></small>
 									</label>
 								</div>
-								<div class="input-group windows_tile_colorpicker">
-									<input type="text" id="windows_tile_color" value="<?php echo ( get_option( 'quickfavicon_windows_tile_color' ) != '' )? get_option( 'quickfavicon_windows_tile_color' ):'#da532c'; ?>" class="form-control" <?php echo ( get_option( 'quickfavicon_windows_tile_color_radio' ) != 'custom' ? ' disabled':'' ); ?> />
+								<div class="input-group colorpicker">
+									<input type="text" name="quickfavicon_windows_tile_color" value="<?php echo ( get_option( 'quickfavicon_windows_tile_color' ) != '' )? get_option( 'quickfavicon_windows_tile_color' ):'#da532c'; ?>" class="form-control" <?php echo ( get_option( 'quickfavicon_windows_tile_color_radio' ) != 'custom' ? ' disabled':'' ); ?> />
 									<span class="input-group-addon"><i></i></span>
 								</div>
 								<div>&nbsp;</div>
