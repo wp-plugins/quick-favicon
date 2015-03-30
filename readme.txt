@@ -8,7 +8,7 @@ Stable tag: 4.1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Easily upload and set a Favicon (browser icon, shortcut icon) for your WordPress site. You may also upload and set icons specifically for iOS devices (apple touch), Android devices and Windows 8.x Tiles.
+Let Quick Favicon take the hassle out of setting up icons for your WordPress site. Favicons! iOS Icons! Android Icons! Windows 8.x Tiles!
 
 == Description ==
 
