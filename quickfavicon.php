@@ -1,8 +1,8 @@
 <?php
 /*
 Plugin Name: Quick Favicon
-Description: Easily upload and set a Favicon (browser icon, shortcut icon) for your WordPress site. You may also upload and set icons specifically for iOS devices (apple touch), Android devices and Windows 8.x Tiles.
-Version: 0.22.4
+Description: Quick Favicon makes it easy to set up icons for your WordPress site. Favicons! iOS Icons! Android Icons! Windows 8.x Tiles! And more!
+Version: 0.22.5
 Author: Robert Cummings
 License: GPL2
 
@@ -40,6 +40,7 @@ add_filter( 'update_option_quickfavicon_ios_icon_id', 				'quickfavicon_make_ios
 add_filter( 'update_option_quickfavicon_ios_icon_bg', 				'quickfavicon_make_ios_icons', 			10, 2); // Make new ios icons when the background color gets changed
 add_filter( 'update_option_quickfavicon_android_icon_id', 		'quickfavicon_make_android_icons', 	10, 2); // Make new android icons when the source icon gets replaced
 add_filter( 'update_option_quickfavicon_android_icon_bg', 		'quickfavicon_make_android_icons', 	10, 2); // Make new android icons when the background color gets changed
+add_filter( 'update_option_quickfavicon_android_icon_app_name', 		'quickfavicon_android_update_manifest', 	10, 2); // Make new android manifest when the app_name gets changed
 add_filter( 'update_option_quickfavicon_windows_icon_id', 		'quickfavicon_make_windows_icons', 	10, 2); // Make new windows icons when the source icon gets replaced
 add_filter( 'update_option_quickfavicon_windows_icon_style', 	'quickfavicon_make_windows_icons', 	10, 2); // Make new windows icons when the icon style gets changed
 
@@ -62,7 +63,6 @@ function quickfavicon_settings() {
 	register_setting( 'quickfavicon-settings-group', 			'quickfavicon_android_icon_app_name' );
 	register_setting( 'quickfavicon-settings-group', 			'quickfavicon_windows_icon_id' );
 	register_setting( 'quickfavicon-settings-group', 			'quickfavicon_windows_icon_style' );
-	register_setting( 'quickfavicon-settings-group', 			'quickfavicon_windows_icon_style_radio' );
 	register_setting( 'quickfavicon-settings-group', 			'quickfavicon_windows_tile_color' );
 	register_setting( 'quickfavicon-settings-group', 			'quickfavicon_windows_tile_color_radio' );
 	register_setting( 'quickfavicon-output-group',				'quickfavicon_android_icon_manifest' );
@@ -112,7 +112,14 @@ function quickfavicon_create_menu() {
  */
 function quickfavicon_top_notice() {
 ?>
-<div class="alert alert-info" role="alert"><span class="glyphicon glyphicon-info-sign"></span> <?php _e( 'Each section (platform) can have a different icon set or share the same one. Just be sure to start out with an appropriately-sized image for each section.', 'quickfavicon' ); ?></div>
+<div class="alert alert-info" role="alert">
+	<small><span class="glyphicon glyphicon-info-sign"></span> <?php _e( 'Developing and maintaining useful tools such as this one requires a lot of time and hard-work. Please consider making a donation.', 'quickfavicon' ); ?></small>
+	<span class="pull-right">
+		<a class="btn btn-xs btn-primary" data-code="a1c0c5db4e40a73f5e16749928b15eec" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=GTR8L9PW3J6QL" target="_blank">PayPal Donate</a>
+		<a class="btn btn-xs btn-primary" data-code="a1c0c5db4e40a73f5e16749928b15eec" href="https://www.coinbase.com/checkouts/a1c0c5db4e40a73f5e16749928b15eec" target="_blank">Bitcoin Donate</a>
+		<script src="https://www.coinbase.com/assets/button.js" type="text/javascript"></script>
+		</span>
+</div>
 <?php
 }
 
@@ -487,7 +494,7 @@ function quickfavicon_make_frontend_icons() {
 		$icon_image = get_attached_file($icon_id, false);
 
 		$transparency = true;
-		$icon_bg_rgb_array = array(0,0,0);
+		$icon_bg_rgb_array = array('red' => 0, 'green' => 0, 'blue' => 0);
 
 		// 96 x 96
 		$filename = $upload_dir['path'].'/favicon-96x96.png';
@@ -552,7 +559,7 @@ function quickfavicon_make_backend_icons() {
 		$icon_image = get_attached_file($icon_id, false);
 
 		$transparency = true;
-		$icon_bg_rgb_array = array(0,0,0);
+		$icon_bg_rgb_array = array('red' => 0, 'green' => 0, 'blue' => 0);
 
 		// 96 x 96
 		$filename = $upload_dir['path'].'/dashboard-favicon-96x96.png';
@@ -617,15 +624,10 @@ function quickfavicon_make_ios_icons() {
 		$icon_image = get_attached_file($icon_id, false);
 
 		$transparency = false;
-		$icon_bg_rgb_array = array(0,0,0);
 
 		$icon_bg_color = get_option( 'quickfavicon_ios_icon_bg' );
 
-		if ($icon_bg_color != '' ) :
-			$icon_bg_rgb_array = quickfavicon_hex_to_rgb(str_replace("#", "", $icon_bg_color) );
-		else :
-			$transparency = true;
-		endif;
+		$icon_bg_rgb_array = quickfavicon_hex_to_rgb(str_replace("#", "", $icon_bg_color) );
 
 		// 180 x 180
 		$filename = $upload_dir['path'].'/apple-touch-icon-180x180.png';
@@ -768,7 +770,7 @@ function quickfavicon_make_android_icons() {
 		$icon_image = get_attached_file($icon_id, false);
 
 		$transparency = false;
-		$icon_bg_rgb_array = array(0,0,0);
+		$icon_bg_rgb_array = array('red' => 0, 'green' => 0, 'blue' => 0);
 
 		$icon_bg_color = get_option( 'quickfavicon_android_icon_bg' );
 
@@ -882,7 +884,7 @@ function quickfavicon_make_windows_icons() {
 		$icon_image = get_attached_file($icon_id, false);
 
 		$transparency = true;
-		$icon_bg_rgb_array = array(0,0,0);
+		$icon_bg_rgb_array = array('red' => 0, 'green' => 0, 'blue' => 0);
 
 		// 310 x 310
 		$filename = $upload_dir['path'].'/mstile-310x310.png';
@@ -1111,10 +1113,16 @@ function quickfavicon_android_update_manifest() {
 	$upload_dir = wp_upload_dir();
 
 	// If a manifest file already exists in the current uploads directory, delete it
-	unlink($upload_dir['path']."/manifest.json");
+	if(file_exists($upload_dir['path']."/manifest.json"))
+		unlink($upload_dir['path']."/manifest.json");
 
 	// If Android icon has been chosen
 	if (get_option( 'quickfavicon_android_icon_id' ) != '') {
+
+		if (get_option('quickfavicon_android_icon_app_name') != '')
+			$android_app_name = get_option( 'quickfavicon_android_icon_app_name' );
+		else
+			$android_app_name = get_bloginfo( 'name' );
 
 		// Update the Android manifest url option
 		update_option('quickfavicon_android_icon_manifest', $upload_dir['url']."/manifest.json" );
@@ -1131,7 +1139,7 @@ function quickfavicon_android_update_manifest() {
 		else {
 			$content = '
 			{
-		  "name": "'.get_option( 'quickfavicon_android_icon_app_name' ).'",
+		  "name": "'.$android_app_name.'",
 		  "icons": [
 		    {
 		      "src": "'.str_replace(get_bloginfo('url'),'',$upload_dir['url']).'/android-chrome-36x36.png",
@@ -1192,7 +1200,8 @@ function quickfavicon_windows_update_manifest() {
 	$upload_dir = wp_upload_dir();
 
 	// If a manifest file already exists in the current uploads directory, delete it
-	unlink($upload_dir['path']."/browserconfig.xml");
+	if(file_exists($upload_dir['path']."/browserconfig.xml"))
+		unlink($upload_dir['path']."/browserconfig.xml");
 
 	// If Windows icon has been chosen
 	if (get_option( 'quickfavicon_windows_icon_id' ) != '') {
@@ -1792,21 +1801,21 @@ function quickfavicon_build_panel_android() {
 
 								<p><b><?php _e( 'Theme Color' ); ?></b></p>
 
-								<small><?php _e( 'Starting with Android Lollipop, you can customize the color of the task bar.' ); ?></small>
-
-								<div class="input-group colorpicker">
-									<input type="text" name="quickfavicon_android_icon_theme_color" class="form-control" value="<?php echo get_option( 'quickfavicon_android_icon_theme_color' ); ?>" />
-									<span class="input-group-addon"><i></i></span>
+								<div class="form-group">
+									<div class="input-group colorpicker">
+										<input type="text" name="quickfavicon_android_icon_theme_color" class="form-control" value="<?php echo get_option( 'quickfavicon_android_icon_theme_color' ); ?>" />
+										<span class="input-group-addon"><i></i></span>
+									</div>
+									<span class="help-block"><small><?php _e( 'Starting with Android Lollipop, you may customize the color of the task bar.' ); ?></small></span>
 								</div>
 
 								<div>&nbsp;</div>
 
 								<p><b><?php _e( 'App Name' ); ?></b></p>
 
-								<small><?php _e( 'Starting with Android Chrome M39 and its manifest, this field is required.' ); ?></small>
-
 								<div class="form-group">
 									<input type="text" name="quickfavicon_android_icon_app_name" value="<?php echo get_option( 'quickfavicon_android_icon_app_name' ); ?>" placeholder="My App" class="form-control" />
+									<span class="help-block"><small><?php _e( 'This is the name that will appear under your icon when pinned to a home screen. If left blank, the WordPress Site Title will be used. Starting with Android Chrome M39 and its manifest, app name is required.' ); ?></small></span>
 								</div>
 
 								<?php submit_button(); ?>
@@ -1985,7 +1994,8 @@ function quickfavicon_build_panel_windows() {
 								<div class="icon-image icon-image-bordered<?php echo ( get_option( 'quickfavicon_windows_icon_id' ) == '' ? ' hidden':'' ); ?>">
 									<div class="icon-image-inner">
 										<img src="<?php if ( get_option( 'quickfavicon_windows_icon_id' ) != '' ) echo wp_get_attachment_url( get_option( 'quickfavicon_windows_icon_id' ) ); ?>" height="310" width="310" />
-										<img id="quickfavicon_white_mask_source" src="<?php if ( get_option( 'quickfavicon_windows_icon_id' ) != '' ) echo wp_get_attachment_url( get_option( 'quickfavicon_windows_icon_id' ) ); ?>" />
+										<?php $image = wp_get_attachment_metadata(get_option('quickfavicon_windows_icon_id')); ?>
+										<img id="quickfavicon_white_mask_source" src="<?php if ( get_option( 'quickfavicon_windows_icon_id' ) != '' ) echo wp_get_attachment_url( get_option( 'quickfavicon_windows_icon_id' ) ); ?>" width="<?php echo $image['width']; ?>" height="<?php echo $image['height']; ?>" />
 									</div>
 									<div><small><b><?php _e( 'Original Image', 'quickfavicon' ); ?></b></small></div>
 								</div>
@@ -2003,12 +2013,11 @@ function quickfavicon_build_panel_windows() {
 							<div class="col-sm-12">
 
 								<p><b><?php _e( 'Tile Color', 'quickfavicon' ); ?></b></p>
-								<div class="radio">
-									<label>
-										<input type="radio" name="quickfavicon_windows_tile_color_radio" id="quickfavicon_windows_tile_color_radio_standard" value="standard"<?php echo ( ( get_option( 'quickfavicon_windows_tile_color_radio' ) == 'standard' || get_option( 'quickfavicon_windows_tile_color_radio' ) == '' ) ? ' checked':'' ); ?>>
-										<small><?php _e( 'Use a standard tile color', 'quickfavicon' ); ?></small>
-									</label>
+								<div class="input-group colorpicker">
+									<input type="text" id="quickfavicon_windows_tile_color" name="quickfavicon_windows_tile_color" value="<?php echo ( get_option( 'quickfavicon_windows_tile_color' ) != '' )? get_option( 'quickfavicon_windows_tile_color' ):'#da532c'; ?>" class="form-control" />
+									<span class="input-group-addon"><i></i></span>
 								</div>
+								<span class="help-block"><small><?php _e( 'You may also choose from one of the standard tile colors below.' ); ?></small></span>
 								<div class="tile-colors">
 									<span class="label label-dark-orange"><a class="windows_tile_label" data-tile-color="#da532c"><?php _e( 'Dark Orange', 'quickfavicon' ); ?> <span class="hidden selected-notice">(<?php _e( 'Selected', 'quickfavicon' ); ?>)</span></a></span>
 									<span class="label label-yellow"><a class="windows_tile_label" data-tile-color="#ffc40d"><?php _e( 'Yellow', 'quickfavicon' ); ?> <span class="hidden selected-notice">(<?php _e( 'Selected', 'quickfavicon' ); ?>)</span></a></span>
@@ -2020,27 +2029,17 @@ function quickfavicon_build_panel_windows() {
 									<span class="label label-dark-purple"><a class="windows_tile_label" data-tile-color="#603cba"><?php _e( 'Dark Purple', 'quickfavicon' ); ?> <span class="hidden selected-notice">(<?php _e( 'Selected', 'quickfavicon' ); ?>)</span></a></span>
 									<span class="label label-dark-red"><a class="windows_tile_label" data-tile-color="#b91d47"><?php _e( 'Dark Red', 'quickfavicon' ); ?> <span class="hidden selected-notice">(<?php _e( 'Selected', 'quickfavicon' ); ?>)</span></a></span>
 								</div>
-								<div class="radio">
-									<label>
-										<input type="radio" name="quickfavicon_windows_tile_color_radio" value="custom"<?php echo ( ( get_option( 'quickfavicon_windows_tile_color_radio' ) == 'custom' ) ? ' checked':'' ); ?>>
-										<small><?php _e( 'Use a custom solid tile color', 'quickfavicon' ); ?></small>
-									</label>
-								</div>
-								<div class="input-group colorpicker">
-									<input type="text" name="quickfavicon_windows_tile_color" value="<?php echo ( get_option( 'quickfavicon_windows_tile_color' ) != '' )? get_option( 'quickfavicon_windows_tile_color' ):'#da532c'; ?>" class="form-control" <?php echo ( get_option( 'quickfavicon_windows_tile_color_radio' ) != 'custom' ? ' disabled':'' ); ?> />
-									<span class="input-group-addon"><i></i></span>
-								</div>
 								<div>&nbsp;</div>
 								<p><b><?php _e( 'Icon Style', 'quickfavicon' ); ?></b></p>
 								<div class="radio">
 									<label>
-										<input type="radio" name="quickfavicon_windows_icon_style_radio" value="white"<?php echo ( ( get_option( 'quickfavicon_windows_icon_style_radio' ) == 'white' || get_option( 'quickfavicon_windows_icon_style_radio' ) == '' ) ? ' checked':'' ); ?>>
+										<input type="radio" id="quickfavicon_windows_icon_style" name="quickfavicon_windows_icon_style" value="white"<?php echo ( ( get_option( 'quickfavicon_windows_icon_style' ) == 'white' || get_option( 'quickfavicon_windows_icon_style_radio' ) == '' ) ? ' checked':'' ); ?>>
 										<small><?php _e( 'Use a white silhouette of the icon', 'quickfavicon' ); ?></small>
 									</label>
 								</div>
 								<div class="radio">
 									<label>
-										<input type="radio" name="quickfavicon_windows_icon_style_radio" value="asis"<?php echo ( ( get_option( 'quickfavicon_windows_icon_style_radio' ) == 'asis' ) ? ' checked':'' ); ?>>
+										<input type="radio" name="quickfavicon_windows_icon_style" value="asis"<?php echo ( ( get_option( 'quickfavicon_windows_icon_style' ) == 'asis' ) ? ' checked':'' ); ?>>
 										<small><?php _e( 'Use the icon as is', 'quickfavicon' ); ?></small>
 									</label>
 								</div>
@@ -2065,7 +2064,7 @@ function quickfavicon_build_panel_windows() {
 							<div class="windows-icon">
 
 								<div class="icon-image windows_icon_cell<?php echo ( get_option( 'quickfavicon_windows_icon_id' ) == '' ? ' hidden':'' ); ?>" style="height: 100px;width: 100px;">
-									<div class="icon-image-inner windows_icon_image_preview" style="padding-left: 25px;padding-top: 20px;">
+									<div class="icon-image-inner windows_icon_image_preview" style="padding-left: 25px;padding-top: 20px;padding-bottom: 26px;">
 										<canvas id="win_tile" height="50" width="50" class="win-canvas"></canvas>
 									</div>
 								</div>
@@ -2094,7 +2093,7 @@ function quickfavicon_build_panel_windows() {
 
 								<div class="col-sm-12 col-lg-6">
 									<div class="icon-image icon-image-bordered<?php echo ( get_option( 'quickfavicon_windows_icon_id' ) == '' ? ' hidden':'' ); ?>">
-										<div class="icon-image-inner windows_icon_image_preview windows_icon_image_preview_dark" style="width: 310px;height: 310px;padding-top: 50px;">
+										<div class="icon-image-inner windows_icon_image_preview" style="width: 310px;height: 310px;padding-top: 50px;">
 											<canvas id="win_310x310" height="180" width="180" style="width: 180px;height: 180px;margin: 0 auto;" class="win-canvas"></canvas>
 										</div>
 										<div><small><b><?php _e( '310 x 310 pixels', 'quickfavicon' ); ?></b></small></div>
@@ -2104,7 +2103,7 @@ function quickfavicon_build_panel_windows() {
 
 								<div class="col-sm-12 col-lg-6">
 									<div class="icon-image icon-image-bordered<?php echo ( get_option( 'quickfavicon_windows_icon_id' ) == '' ? ' hidden':'' ); ?>">
-										<div class="icon-image-inner windows_icon_image_preview windows_icon_image_preview_dark" style="width: 310px;height: 150px;padding-top: 25px;">
+										<div class="icon-image-inner windows_icon_image_preview" style="width: 310px;height: 150px;padding-top: 25px;">
 											<canvas id="win_310x150" height="75" width="75" style="width: 75px;height: 75px;margin: 0 auto;" class="win-canvas"></canvas>
 										</div>
 										<div><small><b><?php _e( '310 x 150 pixels', 'quickfavicon' ); ?></b></small></div>
@@ -2117,7 +2116,7 @@ function quickfavicon_build_panel_windows() {
 
 								<div class="col-sm-12 col-lg-6">
 									<div class="icon-image icon-image-bordered<?php echo ( get_option( 'quickfavicon_windows_icon_id' ) == '' ? ' hidden':'' ); ?>">
-										<div class="icon-image-inner windows_icon_image_preview windows_icon_image_preview_dark" style="width: 150px;height: 150px;padding-top: 25px;">
+										<div class="icon-image-inner windows_icon_image_preview" style="width: 150px;height: 150px;padding-top: 25px;">
 											<canvas id="win_150x150" height="80" width="80" style="width: 80px;height: 80px;margin: 0 auto;" class="win-canvas"></canvas>
 										</div>
 										<div><small><b><?php _e( '150 x 150 pixels', 'quickfavicon' ); ?></b></small></div>
@@ -2127,7 +2126,7 @@ function quickfavicon_build_panel_windows() {
 
 								<div class="col-sm-12 col-lg-6">
 									<div class="icon-image icon-image-bordered<?php echo ( get_option( 'quickfavicon_windows_icon_id' ) == '' ? ' hidden':'' ); ?>">
-										<div class="icon-image-inner windows_icon_image_preview windows_icon_image_preview_dark">
+										<div class="icon-image-inner windows_icon_image_preview">
 											<canvas id="win_144x144" height="144" width="144" style="width: 144px;height: 144px;" class="win-canvas"></canvas>
 										</div>
 										<div><small><b><?php _e( '144 x 144 pixels', 'quickfavicon' ); ?></b></small></div>
@@ -2140,7 +2139,7 @@ function quickfavicon_build_panel_windows() {
 
 								<div class="col-sm-12 col-lg-6">
 									<div class="icon-image icon-image-bordered<?php echo ( get_option( 'quickfavicon_windows_icon_id' ) == '' ? ' hidden':'' ); ?>">
-										<div class="icon-image-inner windows_icon_image_preview windows_icon_image_preview_dark">
+										<div class="icon-image-inner windows_icon_image_preview">
 											<canvas id="win_70x70" height="70" width="70" style="width: 70px;height: 70px;" class="win-canvas"></canvas>
 										</div>
 										<div><small><b><?php _e( '70 x 70 pixels', 'quickfavicon' ); ?></b></small></div>
@@ -2159,9 +2158,6 @@ function quickfavicon_build_panel_windows() {
 
 		</div><!-- /.row -->
 
-		<input type="hidden" name="quickfavicon_windows_tile_color" id="quickfavicon_windows_tile_color" value="<?php echo get_option( 'quickfavicon_windows_tile_color' ); ?>" />
-		<input type="hidden" name="quickfavicon_windows_icon_style" id="quickfavicon_windows_icon_style" value="<?php echo get_option( 'quickfavicon_windows_icon_style' ); ?>" />
-
 	</div><!-- /.panel-body -->
 </div><!-- /.panel -->
 <canvas id="hidden_canvas_1" class="hidden-canvas"></canvas>
@@ -2169,5 +2165,10 @@ function quickfavicon_build_panel_windows() {
 <canvas id="hidden_canvas_3" class="hidden-canvas"></canvas>
 <canvas id="hidden_canvas_4" class="hidden-canvas"></canvas>
 <canvas id="hidden_canvas_5" class="hidden-canvas"></canvas>
+<canvas id="hidden_canvas_6" class="hidden-canvas"></canvas>
+<canvas id="hidden_canvas_7" class="hidden-canvas"></canvas>
+<canvas id="hidden_canvas_8" class="hidden-canvas"></canvas>
+<canvas id="hidden_canvas_9" class="hidden-canvas"></canvas>
+<canvas id="hidden_canvas_10" class="hidden-canvas"></canvas>
 <?php
 }

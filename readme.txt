@@ -42,6 +42,9 @@ True. Those sizes are basically the minimum-margins. If you look at the images t
 
 == Changelog ==
 
+= 0.22.5 =
+* Fixed the issue with saving settings on the Windows section
+
 = 0.22.4 =
 * Fixed the issue with saving settings on the iOS and Android sections
 
