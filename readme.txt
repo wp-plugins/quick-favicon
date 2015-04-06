@@ -42,6 +42,9 @@ True. Those sizes are basically the minimum-margins. If you look at the images t
 
 == Changelog ==
 
+= 0.22.6 =
+* Fixed an issue with the notices and added a plugin rating link
+
 = 0.22.5 =
 * Fixed the issue with saving settings on the Windows section
 

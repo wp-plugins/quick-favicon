@@ -2,7 +2,7 @@
 /*
 Plugin Name: Quick Favicon
 Description: Quick Favicon makes it easy to set up icons for your WordPress site. Favicons! iOS Icons! Android Icons! Windows 8.x Tiles! And more!
-Version: 0.22.5
+Version: 0.22.6
 Author: Robert Cummings
 License: GPL2
 
@@ -22,27 +22,54 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-// Include WordPress image scripts so we can use wp_generate_attachment_metadata()
+/* Include WordPress image scripts so we can use wp_generate_attachment_metadata() */
 require_once( ABSPATH . 'wp-admin/includes/image.php' );
 
-// Add actions
+/**
+ * Add a dashboard page and menu item and initialize settings registration
+ *
+ * @return void
+ */
+function quickfavicon_create_menu() {
+	add_menu_page( 'Quick Favicon', 'Favicon', 'administrator', __FILE__, 'quickfavicon_settings_page', 'dashicons-info' );
+	add_action( 'admin_init', 'quickfavicon_settings' );
+}
 add_action( 'admin_menu', 'quickfavicon_create_menu' );
-add_action( 'wp_head', 		'quickfavicon_frontend_output' );
-add_action( 'wp_head', 		'quickfavicon_ios_output' );
-add_action( 'wp_head', 		'quickfavicon_android_output' );
-add_action( 'wp_head', 		'quickfavicon_windows_output' );
+
+/**
+ * Output for all front-end icons
+ *
+ * @return void
+ */
+function quickfavicon_frontend_output() {
+	quickfavicon_favicon_frontend_output();
+	quickfavicon_ios_output();
+	quickfavicon_android_output();
+	quickfavicon_windows_output();
+}
+add_action( 'wp_head', 'quickfavicon_frontend_output' );
+
+/**
+ * Output for all back-end icons
+ *
+ * @return void
+ */
+function quickfavicon_backend_output() {
+	quickfavicon_favicon_backend_output();
+}
 add_action( 'admin_head', 'quickfavicon_backend_output' );
 
 // Add filters
-add_filter( 'update_option_quickfavicon_frontend_icon_id', 		'quickfavicon_make_frontend_icons', 10, 2); // Make new frontend favicons when the source icon gets replaced
-add_filter( 'update_option_quickfavicon_backend_icon_id', 		'quickfavicon_make_backend_icons', 	10, 2); // Make new backend favicons when the source icon gets replaced
-add_filter( 'update_option_quickfavicon_ios_icon_id', 				'quickfavicon_make_ios_icons', 			10, 2); // Make new ios icons when the source icon gets replaced
-add_filter( 'update_option_quickfavicon_ios_icon_bg', 				'quickfavicon_make_ios_icons', 			10, 2); // Make new ios icons when the background color gets changed
-add_filter( 'update_option_quickfavicon_android_icon_id', 		'quickfavicon_make_android_icons', 	10, 2); // Make new android icons when the source icon gets replaced
-add_filter( 'update_option_quickfavicon_android_icon_bg', 		'quickfavicon_make_android_icons', 	10, 2); // Make new android icons when the background color gets changed
-add_filter( 'update_option_quickfavicon_android_icon_app_name', 		'quickfavicon_android_update_manifest', 	10, 2); // Make new android manifest when the app_name gets changed
-add_filter( 'update_option_quickfavicon_windows_icon_id', 		'quickfavicon_make_windows_icons', 	10, 2); // Make new windows icons when the source icon gets replaced
-add_filter( 'update_option_quickfavicon_windows_icon_style', 	'quickfavicon_make_windows_icons', 	10, 2); // Make new windows icons when the icon style gets changed
+add_filter( 'update_option_quickfavicon_frontend_icon_id', 			'quickfavicon_make_frontend_icons', 			10, 2); // Make new frontend favicons when the source icon gets replaced
+add_filter( 'update_option_quickfavicon_backend_icon_id', 			'quickfavicon_make_backend_icons', 				10, 2); // Make new backend favicons when the source icon gets replaced
+add_filter( 'update_option_quickfavicon_ios_icon_id', 					'quickfavicon_make_ios_icons', 						10, 2); // Make new ios icons when the source icon gets replaced
+add_filter( 'update_option_quickfavicon_ios_icon_bg', 					'quickfavicon_make_ios_icons', 						10, 2); // Make new ios icons when the background color gets changed
+add_filter( 'update_option_quickfavicon_android_icon_id', 			'quickfavicon_make_android_icons', 				10, 2); // Make new android icons when the source icon gets replaced
+add_filter( 'update_option_quickfavicon_android_icon_bg', 			'quickfavicon_make_android_icons', 				10, 2); // Make new android icons when the background color gets changed
+add_filter( 'update_option_quickfavicon_android_icon_app_name',	'quickfavicon_android_update_manifest', 	10, 2); // Make new android manifest when the app_name gets changed
+add_filter( 'update_option_quickfavicon_windows_icon_id', 			'quickfavicon_make_windows_icons', 				10, 2); // Make new windows icons when the source icon gets replaced
+add_filter( 'update_option_quickfavicon_windows_tile_color', 		'quickfavicon_windows_update_manifest', 	10, 2); // Make new windows manifest when the source icon gets replaced
+add_filter( 'update_option_quickfavicon_windows_icon_style', 		'quickfavicon_make_windows_icons', 				10, 2); // Make new windows icons when the icon style gets changed
 
 /**
  * Register the settings
@@ -93,45 +120,6 @@ function quickfavicon_settings() {
 	register_setting( 'quickfavicon-windows-icons-group', 'quickfavicon_windows_icon_150x150_id' );
 	register_setting( 'quickfavicon-windows-icons-group', 'quickfavicon_windows_icon_144x144_id' );
 	register_setting( 'quickfavicon-windows-icons-group', 'quickfavicon_windows_icon_70x70_id' );
-}
-
-/**
- * Add a dashboard page and menu item and initialize settings registration
- *
- * @return void
- */
-function quickfavicon_create_menu() {
-	add_menu_page( 'Quick Favicon', 'Favicon', 'administrator', __FILE__, 'quickfavicon_settings_page', 'dashicons-info' );
-	add_action( 'admin_init', 'quickfavicon_settings' );
-}
-
-/**
- * Build the info notice for the setting page
- *
- * @return void
- */
-function quickfavicon_top_notice() {
-?>
-<div class="alert alert-info" role="alert">
-	<small><span class="glyphicon glyphicon-info-sign"></span> <?php _e( 'Developing and maintaining useful tools such as this one requires a lot of time and hard-work. Please consider making a donation.', 'quickfavicon' ); ?></small>
-	<span class="pull-right">
-		<a class="btn btn-xs btn-primary" data-code="a1c0c5db4e40a73f5e16749928b15eec" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=GTR8L9PW3J6QL" target="_blank">PayPal Donate</a>
-		<a class="btn btn-xs btn-primary" data-code="a1c0c5db4e40a73f5e16749928b15eec" href="https://www.coinbase.com/checkouts/a1c0c5db4e40a73f5e16749928b15eec" target="_blank">Bitcoin Donate</a>
-		<script src="https://www.coinbase.com/assets/button.js" type="text/javascript"></script>
-		</span>
-</div>
-<?php
-}
-
-/**
- * Build the success notice for the setting page
- *
- * @return void
- */
-function quickfavicon_updated_notice() {
-?>
-<div class="alert alert-success" role="alert"><span class="glyphicon glyphicon-ok-sign"></span> <?php _e( 'Your settings have been saved.', 'quickfavicon' ); ?></div>
-<?php
 }
 
 /**
@@ -978,7 +966,7 @@ function quickfavicon_make_windows_icons() {
  *
  * @return void
  */
-function quickfavicon_frontend_output() {
+function quickfavicon_favicon_frontend_output() {
 	if (get_option( 'quickfavicon_frontend_icon_id' ) != '') {
 		// Standard favicon, displayed on tab in modern browsers
 		$url = wp_get_attachment_url( get_option( 'quickfavicon_frontend_icon_16x16_id' ) );
@@ -999,7 +987,7 @@ function quickfavicon_frontend_output() {
  *
  * @return void
  */
-function quickfavicon_backend_output() {
+function quickfavicon_favicon_backend_output() {
 	if (get_option( 'quickfavicon_backend_icon_id' ) != '') {
 		// Standard favicon, displayed on tab in modern browsers
 		$url = wp_get_attachment_url( get_option( 'quickfavicon_backend_icon_16x16_id' ) );
@@ -1803,7 +1791,7 @@ function quickfavicon_build_panel_android() {
 
 								<div class="form-group">
 									<div class="input-group colorpicker">
-										<input type="text" name="quickfavicon_android_icon_theme_color" class="form-control" value="<?php echo get_option( 'quickfavicon_android_icon_theme_color' ); ?>" />
+										<input type="text" id="quickfavicon_android_icon_theme_color" name="quickfavicon_android_icon_theme_color" class="form-control" value="<?php echo get_option( 'quickfavicon_android_icon_theme_color' ); ?>" />
 										<span class="input-group-addon"><i></i></span>
 									</div>
 									<span class="help-block"><small><?php _e( 'Starting with Android Lollipop, you may customize the color of the task bar.' ); ?></small></span>
@@ -2170,5 +2158,38 @@ function quickfavicon_build_panel_windows() {
 <canvas id="hidden_canvas_8" class="hidden-canvas"></canvas>
 <canvas id="hidden_canvas_9" class="hidden-canvas"></canvas>
 <canvas id="hidden_canvas_10" class="hidden-canvas"></canvas>
+<?php
+}
+
+/**
+ * Build the info notice for the setting page
+ *
+ * @return void
+ */
+function quickfavicon_top_notice() {
+?>
+<div class="alert alert-info" role="alert">
+	<small>
+		<?php _e( 'If you like <strong>Quick Favicon</strong> please leave us a <a href="https://wordpress.org/support/view/plugin-reviews/quick-favicon?filter=5#postform" target="_blank" class="wc-rating-link" data-rated="Thanks :)">★★★★★</a> rating and/or consider making a donation through ', 'quickfavicon' ); ?>
+	</small>
+	<span>
+		<a class="btn btn-xs btn-primary" data-code="a1c0c5db4e40a73f5e16749928b15eec" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=GTR8L9PW3J6QL" target="_blank">PayPal</a>
+		<small> <?php _e( 'or', 'quickfavicon' ); ?> </small>
+		<a class="btn btn-xs btn-primary" data-code="a1c0c5db4e40a73f5e16749928b15eec" href="https://www.coinbase.com/checkouts/a1c0c5db4e40a73f5e16749928b15eec" target="_blank">Bitcoin</a>
+		<script src="https://www.coinbase.com/assets/button.js" type="text/javascript"></script>
+		<small>. <?php _e( 'Even the smallest donations are appreciated!', 'quickfavicon' ); ?> </small>
+	</span>
+</div>
+<?php
+}
+
+/**
+ * Build the success notice for the setting page
+ *
+ * @return void
+ */
+function quickfavicon_updated_notice() {
+?>
+<div class="alert alert-success" role="alert"><span class="glyphicon glyphicon-ok-sign"></span> <?php _e( 'Your settings have been saved.', 'quickfavicon' ); ?></div>
 <?php
 }
