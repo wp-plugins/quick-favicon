@@ -2,7 +2,7 @@
 /*
 Plugin Name: Quick Favicon
 Description: Quick Favicon makes it easy to set up icons for your WordPress site. Favicons! iOS Icons! Android Icons! Windows 8.x Tiles! And more! If you have any issues at all, please <a href="http://pluginspired.com/support/">create a support ticket</a>.
-Version: 0.22.7
+Version: 0.22.8
 Author: PlugInspired
 Author URI: http://pluginspired.com/
 License: GPL2
