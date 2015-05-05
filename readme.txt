@@ -1,10 +1,10 @@
 === Quick Favicon ===
 Contributors: rbcummings
 Donate link: http://pluginspired.com/donate/
-Tags: icon, favicon, browser icon, shortcut icon, ios, apple touch, android, chrome, windows, tile
+Tags: icon, icons, favicon, favicons, browser, shortcut, ios, apple touch, android, chrome, windows, tile
 Requires at least: 3.0.1
-Tested up to: 4.1.1
-Stable tag: 4.1.1
+Tested up to: 4.2.1
+Stable tag: 4.2.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,18 +12,104 @@ Quick Favicon makes it easy to set up icons for your WordPress site. Favicons! i
 
 == Description ==
 
-Easily upload and set a Favicon (browser icon, shortcut icon) for your WordPress site. You may also upload and set icons specifically for iOS devices (apple touch), Android devices and Windows 8.x Tiles.
+= What Quick Favicon Can Do =
 
-It's even possible to set a different Favicon for both the front-end and dashboard areas of your site.
+Quick Favicon allows you to easily upload and set Favicons, iOS / Apple Touch Icons, Android / Chrome Icons, and Windows 8 Tiles for your WordPress site.
+
+It displays **live previews** of each size icon while you're making adjustments!
+
+Front-end and back-end Browser Favicons can be set differently.
+
+= Broswer Favicons =
+
+* Google TV Favicon
+ * 96 x 96 pixels
+* Safari Favicon on Mac OS
+ * 32 x 32 pixels
+* Standard Favicon
+ * 16 x 16 pixels
+
+= iOS / Apple Touch Icons =
+
+* iPhone 6 Plus with iOS8
+ * 180 x 180 pixels
+* Retina iPad with iOS7
+ * 152 x 152 pixels
+* Retina iPad with iOS6 or prior
+ * 144 x 144 pixels
+* Retina iPhone with iOS7
+ * 120 x 120 pixels
+* Retina iPhone with iOS6 or prior
+ * 114 x 114 pixels
+* Non-retina iPad with iOS7
+ * 76 x 76 pixels
+* Non-retina iPad with iOS6 or prior
+ * 72 x 72 pixels
+* Non-retina iPhone with iOS7
+ * 60 x 60 pixels
+* Non-retina iPhone with iOS6 or prior
+ * 57 x 57 pixels
+
+= Android / Chrome Icons =
+
+* Chrome M39+ with 4.0 screen density
+ * 192 x 192 pixels
+* Chrome M39+ with 3.0 screen density
+ * 144 x 144 pixels
+* Chrome M39+ with 2.0 screen density
+ * 96 x 96 pixels
+* Chrome M39+ with 1.5 screen density
+ * 72 x 72 pixels
+* Chrome M39+ with 1.0 screen density
+ * 48 x 48 pixels
+* Chrome M39+ with 0.75 screen density
+ * 36 x 36 pixels
+
+= Windows 8 / 8.1 Tiles =
+
+* Windows 8 / IE11 Large Tile
+ * 310 x 310 pixels
+* Windows 8 / IE11 Wide Tile
+ * 310 x 150 pixels
+* Windows 8 / IE11 Medium Tile
+ * 150 x 150 pixels
+* Windows 8 / IE10
+ * 144 x 144 pixels
+* Windows 8 / IE11 Small Tile
+ * 70 x 70 pixels
 
 == Installation ==
 
-1. Upload the `quick-favicon` directory to the `/wp-content/plugins/` directory
-2. Activate the plugin through the 'Plugins' menu in WordPress
+= Install from your Dashboard =
 
-You can then click on `Favicon` on the administration menu and begin configuring your icons!
+1. Go to Plugins > Add New
+2. Search for `Quick Favicon`
+3. Locate `Quick Favicon` by `PlugInspired` in the list
+4. Click Install
+5. If the installation is successful, click the `activate plugin` link
+
+= Install from FTP Upload =
+
+1. Download Quick Favicon from the [WordPress Plugin Repository](https://downloads.wordpress.org/plugin/quick-favicon.zip)
+2. Extract the ZIP archive somewhere on your computer that you can find easily
+3. Upload the extracted `quick-favicon` directory to your site's `/wp-content/plugins/` directory
+4. Activate the plugin on the 'Plugins' page in your WordPress Dashboard
+
+= Using Quick Favicon =
+
+After installing Quick Favicon, you can access your Icon Settings two ways.
+
+1. By clicking `Icon Settings` on the Plugins page in your Dashboard
+2. By clicking `Icons` on the Appearance menu in your Dashboard
 
 == Frequently Asked Questions ==
+
+= I've installed Quick Favicon. Where are my settings? =
+
+After installing Quick Favicon, you can access your Icon Settings two ways.
+
+1. By clicking `Icon Settings` on the Plugins page in your Dashboard
+2. By clicking `Icons` on the Appearance menu in your Dashboard
 
 = Can a different icon be used for both the front and back-end of a site? =
 
@@ -41,6 +127,10 @@ True. Those sizes are basically the minimum-margins. If you look at the images t
 4. Windows 8.x Tiles are groovy, baby! You'll look like a pro when your site looks like a native Windows 8 app. Choose from a recommended tile color or choose your own. The sky is the limit. Five tile icon sizes are generated from the given image to cover Windows 8 / IE11 (70 x 70, 150 x 150, 310 x 150 and 310 x 310) and Windows 8 / IE10 (144 x 144).
 
 == Changelog ==
+
+= 0.22.7 =
+* Added a link to the plugin settings on the plugin actions section
+* Added a link to the donate page on the plugin actions section
 
 = 0.22.6 =
 * Fixed an issue with the notices and added a plugin rating link

@@ -1,9 +1,10 @@
 <?php
 /*
 Plugin Name: Quick Favicon
-Description: Quick Favicon makes it easy to set up icons for your WordPress site. Favicons! iOS Icons! Android Icons! Windows 8.x Tiles! And more!
-Version: 0.22.6
-Author: Robert Cummings
+Description: Quick Favicon makes it easy to set up icons for your WordPress site. Favicons! iOS Icons! Android Icons! Windows 8.x Tiles! And more! If you have any issues at all, please <a href="https://wordpress.org/support/plugin/quick-favicon#postform">create a support ticket</a>.
+Version: 0.22.7
+Author: PlugInspired
+Author URI: http://pluginspired.com/
 License: GPL2
 
 Copyright 2015  Robert Cummings  (email : robertcummings@live.com)
@@ -31,10 +32,26 @@ require_once( ABSPATH . 'wp-admin/includes/image.php' );
  * @return void
  */
 function quickfavicon_create_menu() {
-	add_menu_page( 'Quick Favicon', 'Favicon', 'administrator', __FILE__, 'quickfavicon_settings_page', 'dashicons-info' );
+	add_theme_page( 'Icons', 'Icons', 'administrator', 'icon_settings', 'quickfavicon_settings_page' );
 	add_action( 'admin_init', 'quickfavicon_settings' );
 }
 add_action( 'admin_menu', 'quickfavicon_create_menu' );
+
+function quickfavicon_add_action_links ( $actions, $plugin_file ) {
+	static $plugin;
+	if (!isset($plugin))
+		$plugin = plugin_basename(__FILE__);
+	if ($plugin == $plugin_file) {
+		$donate_action = array('donate' => '<a href="//pluginspired.com/donate/" title="You can donate using your credit card through PayPal without having an account. We also have a Bitcoin wallet." target="_blank">Make a Donation</a>');
+		$rate_action = array('rate' => '<a href="https://wordpress.org/support/view/plugin-reviews/quick-favicon?filter=5#postform" target="_blank" title="Leave Quick Favicon a 5-Star rating on WordPress.org!" data-rated="Thanks :)">★★★★★</a>');
+		$settings_action = array('settings' => '<a href="' . admin_url( 'themes.php?page=icon_settings' ) . '" title="Configure your site\'s Icons. You can also find this link under the Appearance menu. It\'s labeled \'Icons\'.">Icon Settings</a>');
+		$actions = array_merge($donate_action, $actions);
+		$actions = array_merge($rate_action, $actions);
+		$actions = array_merge($settings_action, $actions);
+	}
+	return $actions;
+}
+add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), 'quickfavicon_add_action_links', 10, 5 );
 
 /**
  * Output for all front-end icons
@@ -146,7 +163,7 @@ function quickfavicon_admin_enqueue() {
 	);
 }
 // If plugin setting page is being displayed, enqueue scripts and styles
-if (isset($_GET['page']) && $_GET['page'] == 'quick-favicon/quickfavicon.php' ) {
+if (isset($_GET['page']) && $_GET['page'] == 'icon_settings' ) {
 add_action( 'admin_print_scripts', 'quickfavicon_admin_enqueue' );
 }
 
@@ -1245,11 +1262,12 @@ function quickfavicon_settings_page() {
 ?>
 <div id="quickfavicon_settings_page" class="wrap">
 
-	<h2><?php _e( 'Favicon Settings', 'quickfavicon' ); ?> <span class="pull-right text-muted"><small>Quick Favicon (<?php echo $plugin_data['Version']; ?>) <?php _e( 'by', 'quickfavicon' ); ?> <?php echo $plugin_data['Author']; ?></small></span></h2>
-	<div>&nbsp;</div>
+	<h2><?php _e( 'Icon Settings', 'quickfavicon' ); ?> <span class="pull-right text-muted"><small><strong>Quick Favicon</strong> (<?php echo $plugin_data['Version']; ?>) <?php _e( 'by', 'quickfavicon' ); ?> <strong><?php echo $plugin_data['Author']; ?></strong></small></span></h2>
 	<form id="quickfavicon_settings_form" method="post" action="options.php">
 		<?php settings_fields( 'quickfavicon-settings-group' ); ?>
 		<?php do_settings_sections( 'quickfavicon-settings-group' ); ?>
+
+		<?php quickfavicon_top_notice(); ?>
 
 		<?php
 		$active_tab = get_option( 'quickfavicon_last_tab_used' );
@@ -1260,8 +1278,6 @@ function quickfavicon_settings_page() {
 			quickfavicon_updated_notice();
 		endif;
 		?>
-
-		<?php quickfavicon_top_notice(); ?>
 
 		<div role="tabpanel">
 
@@ -2168,17 +2184,10 @@ function quickfavicon_build_panel_windows() {
  */
 function quickfavicon_top_notice() {
 ?>
-<div class="alert alert-info" role="alert">
-	<small>
-		<?php _e( 'If you like <strong>Quick Favicon</strong> please leave us a <a href="https://wordpress.org/support/view/plugin-reviews/quick-favicon?filter=5#postform" target="_blank" class="wc-rating-link" data-rated="Thanks :)">★★★★★</a> rating and/or consider making a donation through ', 'quickfavicon' ); ?>
-	</small>
-	<span>
-		<a class="btn btn-xs btn-primary" data-code="a1c0c5db4e40a73f5e16749928b15eec" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=GTR8L9PW3J6QL" target="_blank">PayPal</a>
-		<small> <?php _e( 'or', 'quickfavicon' ); ?> </small>
-		<a class="btn btn-xs btn-primary" data-code="a1c0c5db4e40a73f5e16749928b15eec" href="https://www.coinbase.com/checkouts/a1c0c5db4e40a73f5e16749928b15eec" target="_blank">Bitcoin</a>
-		<script src="https://www.coinbase.com/assets/button.js" type="text/javascript"></script>
-		<small>. <?php _e( 'Even the smallest donations are appreciated!', 'quickfavicon' ); ?> </small>
-	</span>
+<div class="updated">
+	<p>
+		<?php _e( 'If you like <strong>Quick Favicon</strong> please leave it a <a href="https://wordpress.org/support/view/plugin-reviews/quick-favicon?filter=5#postform" target="_blank" title="Leave Quick Favicon a 5-Star rating on WordPress.org" data-rated="Thanks :)">★★★★★</a> rating and/or consider <a href="//pluginspired.com/donate/" title="Donate with PayPal or Bitcoin and help make Quick Favicon better" target="_blank"><b>making a donation</b></a>. Even the smallest donations are appreciated!', 'quickfavicon' ); ?>
+	</p>
 </div>
 <?php
 }
@@ -2190,6 +2199,6 @@ function quickfavicon_top_notice() {
  */
 function quickfavicon_updated_notice() {
 ?>
-<div class="alert alert-success" role="alert"><span class="glyphicon glyphicon-ok-sign"></span> <?php _e( 'Your settings have been saved.', 'quickfavicon' ); ?></div>
+<div class="updated" role="alert"><span class="glyphicon glyphicon-ok-sign"></span> <?php _e( 'Your settings have been saved.', 'quickfavicon' ); ?></div>
 <?php
 }
